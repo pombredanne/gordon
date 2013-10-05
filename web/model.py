@@ -51,6 +51,23 @@ class IssueCollection(object):
 
 
 
+class Commit(object):
+    def __init__(self):
+        self.email = None
+        self.message = None
+        self.login = None
+        self.sha = None
+        self.name = None
+    
+    def from_dict(self, data):
+        self.email = data.get('author_email')
+        self.message = data.get('message')
+        self.login = data.get('login')
+        self.sha = data.get('id')
+        self.name = data.get('author_name')
+        return self
+
+
 
 class Committer(object):
     def __init__(self, name, commits):

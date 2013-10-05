@@ -56,7 +56,22 @@ def cache_commits():
     for commit in commit_list:
         prefix = "commit"
         suffix = commit.sha[:5]
-        json_dict = commit.__dict__
+        b = commit.__dict__.get('_rawData')
+        author_name = b.get('commit').get('committer').get('name')
+        author_email = b.get('commit').get('committer').get('email')
+        commit_message = b.get('commit').get('committer').get('message')
+        try:
+            login = b.get('committer').get('login')
+        except:
+            login = "unknown"
+        sha = b.get("sha")
+        json_dict = {"author_name": author_name, 
+                "author_email": author_email,
+                "commit_message": commit_message,
+                "login": login,
+                "id": sha
+                }
+        
         r.hmset('{0}:{1}'.format(prefix, suffix), json_dict)
 
 
@@ -76,8 +91,6 @@ def closed_issues():
     closed_issues = filter_keys("issue:*", lambda x: obj_from_key(x).state == "closed")
     return closed_issues
 
-def commits():
-    commits = filter_keys("commit:*", lambda x: obj_from_key(x))
 
 def oldest(lst):
     return sorted(lst, key=lambda x: x.created_at)

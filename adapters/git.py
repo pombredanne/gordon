@@ -54,8 +54,9 @@ def check_pull_request_commits(number):
     for commit in pull.get_commits():
         email = commit.commit.author.email
         real_name = commit.commit.author.name
+        login = commit.commit.author.login
         message = commit.commit.message
-        signed = 'Signed-off-by: {0} <{1}>'.format(real_name, email) in message
+        signed = 'Docker-DCO-1.0-Signed-off-by: {0} <{1}> @{2}'.format(real_name, email, login) in message
         if signed:
             commit.create_status('success', description='Commit has been properly signed.')
         else:
